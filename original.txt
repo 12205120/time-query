@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define WORKING_HOURS 120 // 2 hours in minutes
+#define MAX_QUERY_TIME 10 // Maximum time per query in minutes
+
+typedef struct Query {
+    char type; // 'S' for student, 'F' for faculty
+    int time;  // Time required for the query in minutes
+} Query;
+
+// Function to process queries
+void processQueries(Query *queries, int numQueries) {
+    int total_time_spent = 0;
+    int total_queries = 0;
+    int current_time = 0;
+
+    for (int i = 0; i < numQueries; i++) {
+        Query query = queries[i];
+
+        // Check if there is enough time left to handle the query
+        if (current_time + query.time <= WORKING_HOURS) {
+            total_time_spent += query.time;
+            current_time += query.time;
+            total_queries++;
+
+            printf("Processed %c query in %d minutes\n", query.type, query.time);
+        } else {
+            printf("Cannot process %c query in %d minutes (not enough time left)\n", query.type, query.time);
+        }
+    }
+
+    float average_query_time = (float)total_time_spent / total_queries;
+
+    printf("Total time spent: %d minutes\n", total_time_spent);
+    printf("Average query time: %.2f minutes\n", average_query_time);
+}
+
+int main() {
+    int numQueries;
+
+    printf("Enter the number of queries: ");
+    scanf("%d", &numQueries);
+
+    Query *queries = (Query *)malloc(numQueries * sizeof(Query));
+
+    if (queries == NULL) {
+        printf("Memory allocation failed. Exiting...\n");
+        return 1;
+    }
+
+    printf("Enter the queries (e.g., 'S 5' for student with 5 minutes, 'F 8' for faculty with 8 minutes): \n");
+
+    for (int i = 0; i < numQueries; i++) {
+        scanf(" %c %d", &queries[i].type, &queries[i].time);
+    }
+
+    processQueries(queries, numQueries);
+
+    free(queries);
+
+ return 0;
+}
